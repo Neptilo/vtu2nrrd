@@ -43,7 +43,6 @@ int exportImage(vtkImageData* imageData)
   {
     std::cerr << "Sorry, no handling has been defined for multi-dimensional "
       "data yet" << std::endl;
-      std::cout << "No error output????";
     return EXIT_FAILURE;
   }
 
@@ -79,6 +78,7 @@ int exportImage(vtkImageData* imageData)
   try
   {
     nrrdWriter->Update();
+    std::cout << "Successfully wrote to file out.nrrd." << std::endl;
   }
   catch (itk::ExceptionObject& e)
   {
@@ -98,6 +98,7 @@ int main (int argc, char *argv[])
   int f = 1;
   while (f < argc)
   {
+    std::cout << "Reading data..." << std::endl;
     vtkDataSet *dataSet;
     std::string extension =
       vtksys::SystemTools::GetFilenameLastExtension(argv[f]);
@@ -211,6 +212,7 @@ int main (int argc, char *argv[])
     }
 
     // Sample dataset on a uniform grid in parallel
+    std::cout << "Resampling data..." << std::endl;
     vtkSmartPointer<vtkResampleToImage> resampleFilter =
       vtkSmartPointer<vtkResampleToImage>::New();
     resampleFilter->SetInputDataObject(dataSet);
@@ -225,14 +227,46 @@ int main (int argc, char *argv[])
       << dims[1] << ", "
       << dims[2] << std::endl;
 
+    vtkPointData* imgPtData = imageData->GetPointData();
+    std::cout << "Resampled data contains point data with "
+          << imgPtData->GetNumberOfArrays()
+          << " arrays." << std::endl;
+    for (int i = 0; i < imgPtData->GetNumberOfArrays(); i++) {
+      vtkDataArray* dataArray = imgPtData->GetArray(i);
+      std::string typeStr;
+      switch (dataArray->GetDataType()) {
+        case VTK_CHAR:
+          typeStr = "char";
+          break;
+        case VTK_INT:
+          typeStr = "int";
+          break;
+        case VTK_FLOAT:
+          typeStr = "float";
+          break;
+        case VTK_DOUBLE:
+          typeStr = "double";
+          break;
+        default:
+          typeStr = std::to_string(dataArray->GetDataType());
+          break;
+      }
+      std::cout << "\tArray " << i
+            << " is named "
+            << (dataArray->GetName() ? dataArray->GetName() : "NULL")
+            << " and has "
+            << dataArray->GetNumberOfComponents()
+            << " component(s) of type "
+            << typeStr
+            << std::endl;
+    }
+
     // set the scalars as the chosen field
-    std::cout << "Enter the index of the cell data array you which to extract:"
+    std::cout << "Enter the index of the data array you which to extract:"
       << std::endl;
     int imgPtDataInd;
     std::cin >> imgPtDataInd;
 
-    vtkPointData* imgPtData = imageData->GetPointData();
-    // FIXME: imgPtDataInd doesn't match the index in the cell data iterator
     vtkDataArray* imgPtDataArray = imgPtData->GetArray(imgPtDataInd);
     imgPtData->SetScalars(imgPtDataArray);
 

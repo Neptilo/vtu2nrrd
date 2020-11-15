@@ -1,10 +1,12 @@
-This manual is only intended for Windows for now. Instructions for Linux will be added soon.
+This manual is only intended for Windows for now.
+
+This tool hasn't been tested with other operating systems.
 
 Build instructions
 ==================
 
 * Download CMake and add `cmake.exe` to your PATH environment variable, e.g. `C:\Program Files\CMake\bin\`.
-* Download [Visual Studio 16 2019 Buld Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools&rel=16) because when using MinGW, some functions are missing and the build fails. Add `msbuild` to your PATH, e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin`.
+* Download [Visual Studio 16 2019 Build Tools](https://visualstudio.microsoft.com/thank-you-downloading-visual-studio/?sku=BuildTools&rel=16) because when using MinGW, some functions are missing and the build fails. Add `msbuild` to your PATH, e.g. `C:\Program Files (x86)\Microsoft Visual Studio\2019\BuildTools\MSBuild\Current\Bin`.
 * Download VTK 8.2.0 source [from here](https://vtk.org/download/) and unzip it under `vtu2nrrd\libs`.
 * Download InsightToolkit (ITK) 5.0.1 source [from here](https://itk.org/download/) and unzip it under `vtu2nrrd\libs`.
 * Build VTK with Visual Studio:
